@@ -1,12 +1,11 @@
 package com.taehyeon.toDoListService.domain.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class MemberLoginRequest {
     @NotEmpty(message = "아이디 입력 해라")
     private String username;

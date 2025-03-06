@@ -1,4 +1,4 @@
-package com.taehyeon.toDoListService.exception;
+package com.taehyeon.toDoListService.exception.authException;
 
 public class AuthException extends RuntimeException {
     public AuthException() {
@@ -14,9 +14,5 @@ public class AuthException extends RuntimeException {
 
     public AuthException(Throwable cause) {
         super(cause);
-    }
-
-    public AuthException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

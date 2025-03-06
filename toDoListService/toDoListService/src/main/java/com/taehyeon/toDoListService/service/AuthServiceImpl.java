@@ -3,10 +3,9 @@ package com.taehyeon.toDoListService.service;
 import com.taehyeon.toDoListService.domain.Member;
 import com.taehyeon.toDoListService.domain.dto.MemberLoginRequest;
 import com.taehyeon.toDoListService.domain.dto.MemberRegisterRequest;
-import com.taehyeon.toDoListService.exception.*;
+import com.taehyeon.toDoListService.exception.authException.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service

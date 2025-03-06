@@ -2,7 +2,10 @@ package com.taehyeon.toDoListService.controller;
 
 import com.taehyeon.toDoListService.domain.dto.MemberLoginRequest;
 import com.taehyeon.toDoListService.domain.dto.MemberRegisterRequest;
-import com.taehyeon.toDoListService.exception.*;
+import com.taehyeon.toDoListService.exception.authException.DuplicateUsernameException;
+import com.taehyeon.toDoListService.exception.authException.InvalidPasswordException;
+import com.taehyeon.toDoListService.exception.authException.NoSuchMemberException;
+import com.taehyeon.toDoListService.exception.authException.PasswordMismatchException;
 import com.taehyeon.toDoListService.service.AuthServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,17 +24,19 @@ public class AuthController {
     @GetMapping
     public String loginPage(Model model) {
         model.addAttribute("memberLoginRequest", new MemberLoginRequest());
+
         return "index";
     }
 
     @GetMapping("register")
     public String registerPage(Model model) {
         model.addAttribute("memberRegisterRequest", new MemberRegisterRequest());
+
         return "register";
     }
 
     /**
-     * validation 동작을 나눠서 상황에 맞게 에러 표시
+     * validation
      * 1. DTO가 유효한가?
      * 2. ID가 DB에 존재 하는가?
      * 3. PW가 ID와 매칭 되는가?
@@ -55,11 +60,12 @@ public class AuthController {
         }
 
         authService.login(memberLoginRequest, session);
+
         return "redirect:/";
     }
 
     /**
-     * validation 동작을 나눠서 상황에 맞게 에러 표시
+     * validation
      * 1. DTO가 유효한가?
      * 2. ID가 이미 사용 중인가?
      * 3. PW가 PW 확인과 같은가?
@@ -88,6 +94,7 @@ public class AuthController {
         }
 
         authService.join(memberRegisterRequest);
+
         return "redirect:/";
     }
 }

@@ -1,7 +1,7 @@
 package com.taehyeon.toDoListService.service;
 
 import com.taehyeon.toDoListService.domain.Member;
-import com.taehyeon.toDoListService.exception.NoSuchMemberException;
+import com.taehyeon.toDoListService.exception.authException.NoSuchMemberException;
 import com.taehyeon.toDoListService.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

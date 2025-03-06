@@ -1,7 +1,7 @@
 package com.taehyeon.toDoListService.service;
 
 import com.taehyeon.toDoListService.domain.Member;
-import com.taehyeon.toDoListService.exception.NoSuchMemberException;
+import com.taehyeon.toDoListService.exception.authException.NoSuchMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ class MemberServiceImplTest {
     @Test
     @DisplayName("회원 추가")
     void add() {
-        Member member = Member.create("abc", "1234");
+        Member member = Member.createMember("abc", "김태현","1234");
         memberServiceImpl.add(member);
 
         Member findMember = memberServiceImpl.find(member.getId());
@@ -34,7 +34,7 @@ class MemberServiceImplTest {
     @Test
     @DisplayName("회원 검색 (단건)")
     void find() {
-        Member member = Member.create("abc", "1234");
+        Member member = Member.createMember("abc", "김태현","1234");
         memberServiceImpl.add(member);
 
         Member findMember = memberServiceImpl.find(member.getId());
@@ -47,11 +47,11 @@ class MemberServiceImplTest {
     @Test
     @DisplayName("회원 검색 (N건)")
     void findAll() {
-        memberServiceImpl.add(Member.create("abc1", "1234"));
-        memberServiceImpl.add(Member.create("abc2", "1234"));
-        memberServiceImpl.add(Member.create("abc3", "1234"));
-        memberServiceImpl.add(Member.create("abc4", "1234"));
-        memberServiceImpl.add(Member.create("abc5", "1234"));
+        memberServiceImpl.add(Member.createMember("abc1","김태현", "1234"));
+        memberServiceImpl.add(Member.createMember("abc2","김태현", "1234"));
+        memberServiceImpl.add(Member.createMember("abc3","김태현", "1234"));
+        memberServiceImpl.add(Member.createMember("abc4","김태현", "1234"));
+        memberServiceImpl.add(Member.createMember("abc5","김태현", "1234"));
 
         List<Member> members = memberServiceImpl.findAll();
 
@@ -61,7 +61,7 @@ class MemberServiceImplTest {
     @Test
     @DisplayName("회원 삭제")
     void delete() {
-        Member member = Member.create("abc", "1234");
+        Member member = Member.createMember("abc","김태현", "1234");
 
         memberServiceImpl.add(member);
         assertEquals(member, memberServiceImpl.find(member.getId()));

@@ -1,4 +1,4 @@
-package com.taehyeon.toDoListService.exception;
+package com.taehyeon.toDoListService.exception.authException;
 
 public class InvalidPasswordException extends AuthException{
     public InvalidPasswordException() {
