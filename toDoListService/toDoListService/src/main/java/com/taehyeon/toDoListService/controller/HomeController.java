@@ -2,6 +2,7 @@ package com.taehyeon.toDoListService.controller;
 
 import com.taehyeon.toDoListService.domain.Member;
 import com.taehyeon.toDoListService.domain.Task;
+import com.taehyeon.toDoListService.domain.TaskStatus;
 import com.taehyeon.toDoListService.domain.dto.HomeDisplayRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskAddRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskDTO;
@@ -28,7 +29,7 @@ public class HomeController {
             Member member = memberService.findByUsername((String) session.getAttribute("username"));
             List<Task> tasks = member.getTasks();
 
-            model.addAttribute("homeDisplayRequest", new HomeDisplayRequest(member.getNickname(), tasks));
+            model.addAttribute("homeDisplayRequest", new HomeDisplayRequest(tasks));
         } catch (AuthException e){
             session.invalidate();
 
@@ -73,13 +74,28 @@ public class HomeController {
     }
 
     @PostMapping("/{taskId}/edit")
-    public String editTask(@ModelAttribute("taskDTO") TaskDTO taskDTO) {
-        Task task = taskService.find(taskDTO.getId());
+    public String editTask(@ModelAttribute("taskDTO") TaskDTO taskDTO, @PathVariable Long taskId) {
+        Task task = taskService.find(taskId);
 
         task.changeTitle(taskDTO.getTitle());
         task.changeCaption(taskDTO.getCaption());
         task.changeDueDate(taskDTO.getDueDate());
-        task.changeStatus(taskDTO.getStatus());
+
+        return "redirect:/home";
+    }
+
+    @PostMapping("/{taskId}/complete")
+    public String completeTask(@PathVariable Long taskId) {
+        Task task = taskService.find(taskId);
+
+        task.changeStatus(TaskStatus.COMPLETE);
+
+        return "redirect:/home";
+    }
+
+    @PostMapping("/{taskId}/delete")
+    public String deleteTask(@PathVariable Long taskId) {
+        taskService.delete(taskId);
 
         return "redirect:/home";
     }

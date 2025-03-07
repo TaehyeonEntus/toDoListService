@@ -58,10 +58,9 @@ public class AuthController {
             bindingResult.rejectValue("password", "password.invalid","유효하지 않은 비밀번호 입니다.");
             return "index";
         }
-
         authService.login(memberLoginRequest, session);
 
-        return "redirect:/";
+        return "redirect:/home";
     }
 
     /**
@@ -74,6 +73,7 @@ public class AuthController {
     public String register(@Valid MemberRegisterRequest memberRegisterRequest, BindingResult bindingResult) {
         //Dto 유효성 검사
         if (bindingResult.hasErrors()) {
+            System.out.println("bindingResult = " + bindingResult);
             return "register";
         }
 

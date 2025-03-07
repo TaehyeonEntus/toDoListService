@@ -24,6 +24,6 @@ public class TaskDTO {
         this.caption = task.getCaption();
         this.member = task.getMember();
         this.dueDate = task.getDueDate();
-        this.status = task.getTaskStatus();
+        this.status = task.getStatus();
     }
 }

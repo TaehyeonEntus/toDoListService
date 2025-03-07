@@ -16,6 +16,7 @@ public class AuthServiceImpl implements AuthService {
     public Long login(MemberLoginRequest memberLoginRequest, HttpSession session) {
         Member member = memberService.findByUsername(memberLoginRequest.getUsername());
         session.setAttribute("username", member.getUsername());
+        session.setAttribute("nickname", member.getNickname());
         return member.getId();
     }
 

@@ -9,11 +9,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class HomeDisplayRequest {
-    private String nickname;
     private List<Task> tasks;
 
-    public HomeDisplayRequest(String nickname, List<Task> tasks) {
-        this.nickname = nickname;
+    public HomeDisplayRequest(List<Task> tasks) {
         this.tasks = tasks;
     }
 }

@@ -30,7 +30,7 @@ public class Task extends BaseEntity{
     private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
-    private TaskStatus taskStatus;
+    private TaskStatus status;
 
     //==생성 메서드==//
     public static Task createTask(String title, String caption, LocalDateTime dueDate){
@@ -38,7 +38,7 @@ public class Task extends BaseEntity{
         task.title = title;
         task.caption = caption;
         task.dueDate = dueDate;
-        task.taskStatus = TaskStatus.TODO;
+        task.status = TaskStatus.TODO;
         return task;
     }
 
@@ -61,7 +61,7 @@ public class Task extends BaseEntity{
     }
 
     public void changeStatus(TaskStatus status){
-        this.taskStatus = status;
+        this.status = status;
     }
 
     public Task(TaskDTO taskDTO){
@@ -70,7 +70,7 @@ public class Task extends BaseEntity{
         this.caption = taskDTO.getCaption();
         this.member = taskDTO.getMember();
         this.dueDate = taskDTO.getDueDate();
-        this.taskStatus = taskDTO.getStatus();
+        this.status = taskDTO.getStatus();
     }
 
     public Task(TaskAddRequest taskAddRequest){

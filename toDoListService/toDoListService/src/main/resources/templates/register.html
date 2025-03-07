@@ -27,6 +27,14 @@
 
                         <!-- Password 입력 필드 -->
                         <div class="mb-3">
+                            <label for="nickname" class="form-label">Nickname</label>
+                            <input type="text" class="form-control" id="nickname"
+                                   th:field="*{nickname}" th:classappend="${#fields.hasErrors('nickname')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></div>
+                        </div>
+
+                        <!-- Password 입력 필드 -->
+                        <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password"
                                    th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
@@ -48,7 +56,7 @@
 
 
                     <div class="text-center mt-3">
-                        <a href="/login">Already have an account? Login</a>
+                        <a href="/">Already have an account? Login</a>
                     </div>
                 </div>
             </div>
