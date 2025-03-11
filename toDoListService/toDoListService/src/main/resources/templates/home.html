@@ -14,47 +14,46 @@
     <div class="row d-flex justify-content-center"> <!-- 카드들을 가운데 정렬 -->
         <!-- tasks 리스트를 순회하여 각 task를 카드 형태로 출력 -->
         <div class="col-md-6 col-lg-4 mb-4" th:each="task : ${homeDisplayRequest.tasks}">
-            <div class="card">
+            <!-- Task 카드 -->
+            <div class="card" th:classappend="${task.status.name() == 'COMPLETE'} ? 'bg-light text-muted' : ''">
                 <div class="card-body">
-                    <!-- Task Title -->
-                    <h5 class="card-title" th:text="${task.title}">Task Title</h5>
-                    <!-- Task Caption -->
+                    <!-- Task 제목 + "✔ 완료됨" 뱃지 추가 -->
+                    <h5 class="card-title">
+                        <span th:text="${task.title}">Task Title</span>
+                        <span th:if="${task.status.name() == 'COMPLETE'}" class="badge bg-secondary ms-2">✔ 완료됨</span>
+                    </h5>
+
+                    <!-- Task 설명 -->
                     <p class="card-text" th:text="${task.caption}">Task Caption</p>
 
-                    <!-- Task Created and Due Date in a row (horizontally) -->
                     <div class="d-flex justify-content-between">
-                        <!-- Task Created Date -->
-                        <p class="card-text mb-0" th:text="'Created: ' + ${#temporals.format(task.created_at, 'yyyy-MM-dd HH:mm')}">Created: Date</p>
-
-                        <!-- Task Due Date -->
-                        <p class="card-text mb-0" th:text="'Due: ' + ${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}">Due: Date</p>
+                        <p class="card-text mb-0"
+                           th:text="'Created: ' + ${#temporals.format(task.created_at, 'yyyy-MM-dd HH:mm')}"></p>
+                        <p class="card-text mb-0"
+                           th:text="'Due: ' + ${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></p>
                     </div>
 
-                    <!-- 진행 중인 task -->
                     <div class="d-flex justify-content-end mt-3">
-                        <!-- Complete Button -->
-                        <form th:action="@{/home/{taskId}/complete(taskId=${task.id})}" method="post">
-                            <button type="submit" class="btn btn-success btn-sm me-2">완료</button>
-                        </form>
+                        <!-- 진행 중인 Task일 때만 "완료" & "수정" 버튼 표시 -->
+                        <th:block th:if="${task.status.name() == 'TODO'}">
+                            <form th:action="@{/home/{taskId}/complete(taskId=${task.id})}" method="post">
+                                <button type="submit" class="btn btn-success btn-sm me-2">완료</button>
+                            </form>
+                            <form th:action="@{/home/{taskId}/edit(taskId=${task.id})}" method="get">
+                                <button type="submit" class="btn btn-primary btn-sm me-2">수정</button>
+                            </form>
+                        </th:block>
 
-                        <!-- Edit Button -->
-                        <form th:action="@{/home/{taskId}/edit(taskId=${task.id})}" method="post">
-                            <button type="submit" class="btn btn-primary btn-sm me-2">수정</button>
-                        </form>
-
-                        <!-- Delete Button -->
+                        <!-- 삭제 버튼 (항상 표시) -->
                         <form th:action="@{/home/{taskId}/delete(taskId=${task.id})}" method="post">
                             <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
 
 <!-- 푸터 템플릿 호출 -->

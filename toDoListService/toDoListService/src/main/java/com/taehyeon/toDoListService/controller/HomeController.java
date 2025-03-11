@@ -5,14 +5,16 @@ import com.taehyeon.toDoListService.domain.Task;
 import com.taehyeon.toDoListService.domain.TaskStatus;
 import com.taehyeon.toDoListService.domain.dto.HomeDisplayRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskAddRequest;
-import com.taehyeon.toDoListService.domain.dto.TaskDTO;
+import com.taehyeon.toDoListService.domain.dto.TaskEditRequest;
 import com.taehyeon.toDoListService.exception.authException.AuthException;
 import com.taehyeon.toDoListService.service.MemberServiceImpl;
 import com.taehyeon.toDoListService.service.TaskServiceImpl;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,9 +49,12 @@ public class HomeController {
     }
 
     @PostMapping("/add")
-    public String addTask(@ModelAttribute("taskAddRequest") TaskAddRequest taskAddRequest, HttpSession session) {
+    public String addTask(@Valid TaskAddRequest taskAddRequest, BindingResult bindingResult, HttpSession session) {
+        if (bindingResult.hasErrors()) {
+            return "taskAdd";
+        }
         Member member = memberService.findByUsername((String)session.getAttribute("username"));
-        Task task = new Task(taskAddRequest);
+        Task task = Task.createTask(taskAddRequest.getTitle(), taskAddRequest.getCaption(), taskAddRequest.getDueDate());
 
         task.assignTo(member);
         taskService.add(task);
@@ -57,39 +62,34 @@ public class HomeController {
         return "redirect:/home";
     }
 
-    @GetMapping("/{taskId}")
-    public String showTask(Model model, @PathVariable String taskId) {
-        model.addAttribute("taskDTO", new TaskDTO());
-
-        return "taskShow";
-    }
-
     @GetMapping("/{taskId}/edit")
     public String editTask(Model model, @PathVariable Long taskId) {
         Task task = taskService.find(taskId);
 
-        model.addAttribute("taskDTO", new TaskDTO(task));
-
+        model.addAttribute("taskEditRequest", new TaskEditRequest(task));
         return "taskEdit";
     }
 
     @PostMapping("/{taskId}/edit")
-    public String editTask(@ModelAttribute("taskDTO") TaskDTO taskDTO, @PathVariable Long taskId) {
+    public String editTask(@Valid TaskEditRequest taskEditRequest, BindingResult bindingResult, @PathVariable Long taskId) {
+        if (bindingResult.hasErrors()) {
+            return "taskEdit";
+        }
         Task task = taskService.find(taskId);
 
-        task.changeTitle(taskDTO.getTitle());
-        task.changeCaption(taskDTO.getCaption());
-        task.changeDueDate(taskDTO.getDueDate());
+        task.changeTitle(taskEditRequest.getTitle());
+        task.changeCaption(taskEditRequest.getCaption());
+        task.changeDueDate(taskEditRequest.getDueDate());
 
+        taskService.update(task);
         return "redirect:/home";
     }
 
     @PostMapping("/{taskId}/complete")
     public String completeTask(@PathVariable Long taskId) {
         Task task = taskService.find(taskId);
-
         task.changeStatus(TaskStatus.COMPLETE);
-
+        taskService.update(task);
         return "redirect:/home";
     }
 

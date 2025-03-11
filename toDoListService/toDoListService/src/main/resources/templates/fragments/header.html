@@ -11,7 +11,7 @@
                         <span class="nav-link" th:text="${session.nickname} + '님'">***님</span>
                     </li>
                     <li class="nav-item">
-                        <form id="addBtn" th:action="@{/home/add}" method="post">
+                        <form id="addBtn" th:action="@{/home/add}" method="get">
                             <button type="submit" class="btn btn-success">New Task</button>
                         </form>
                     </li>

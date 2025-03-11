@@ -1,6 +1,5 @@
 package com.taehyeon.toDoListService.domain;
 
-import com.taehyeon.toDoListService.domain.dto.TaskAddRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -71,11 +70,5 @@ public class Task extends BaseEntity{
         this.member = taskDTO.getMember();
         this.dueDate = taskDTO.getDueDate();
         this.status = taskDTO.getStatus();
-    }
-
-    public Task(TaskAddRequest taskAddRequest){
-        this.title = taskAddRequest.getTitle();
-        this.caption = taskAddRequest.getCaption();
-        this.dueDate = taskAddRequest.getDueDate();
     }
 }
