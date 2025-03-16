@@ -1,8 +1,6 @@
 package com.taehyeon.toDoListService.controller;
 
-import com.taehyeon.toDoListService.domain.Member;
-import com.taehyeon.toDoListService.domain.Task;
-import com.taehyeon.toDoListService.domain.TaskStatus;
+import com.taehyeon.toDoListService.domain.*;
 import com.taehyeon.toDoListService.domain.dto.HomeDisplayRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskAddRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskEditRequest;
@@ -12,12 +10,14 @@ import com.taehyeon.toDoListService.service.TaskServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/home")
@@ -25,17 +25,22 @@ import java.util.List;
 public class HomeController {
     private final MemberServiceImpl memberService;
     private final TaskServiceImpl taskService;
-    @GetMapping
-    public String home(Model model, HttpSession session) {
-        try{
-            Member member = memberService.findByUsername((String) session.getAttribute("username"));
-            List<Task> tasks = member.getTasks();
 
-            model.addAttribute("homeDisplayRequest", new HomeDisplayRequest(tasks));
+    @GetMapping
+    public String home(@ModelAttribute TaskSearchCondition condition,
+                       @PageableDefault(size = 10, sort = "dueDate",direction = Sort.Direction.ASC) Pageable pageable,
+                       Model model,
+                       HttpSession session) {
+        try{
+            memberService.find((Long) session.getAttribute("memberId"));
+            Page<Task> page = taskService.findPage(pageable, condition);
+
+            model.addAttribute("condition", condition);
+            model.addAttribute("homeDisplayRequest", new HomeDisplayRequest(page));
         } catch (AuthException e){
             session.invalidate();
 
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         return "home";
@@ -53,12 +58,11 @@ public class HomeController {
         if (bindingResult.hasErrors()) {
             return "taskAdd";
         }
-        Member member = memberService.findByUsername((String)session.getAttribute("username"));
+        Member member = memberService.find((Long)session.getAttribute("memberId"));
         Task task = Task.createTask(taskAddRequest.getTitle(), taskAddRequest.getCaption(), taskAddRequest.getDueDate());
 
         task.assignTo(member);
         taskService.add(task);
-
         return "redirect:/home";
     }
 
@@ -75,21 +79,13 @@ public class HomeController {
         if (bindingResult.hasErrors()) {
             return "taskEdit";
         }
-        Task task = taskService.find(taskId);
-
-        task.changeTitle(taskEditRequest.getTitle());
-        task.changeCaption(taskEditRequest.getCaption());
-        task.changeDueDate(taskEditRequest.getDueDate());
-
-        taskService.update(task);
+        taskService.update(taskId, Task.createTask(taskEditRequest.getTitle(), taskEditRequest.getCaption(), taskEditRequest.getDueDate()).changeStatus(taskEditRequest.getStatus()));
         return "redirect:/home";
     }
 
     @PostMapping("/{taskId}/complete")
     public String completeTask(@PathVariable Long taskId) {
-        Task task = taskService.find(taskId);
-        task.changeStatus(TaskStatus.COMPLETE);
-        taskService.update(task);
+        taskService.updateStatus(taskId, TaskStatus.COMPLETE);
         return "redirect:/home";
     }
 

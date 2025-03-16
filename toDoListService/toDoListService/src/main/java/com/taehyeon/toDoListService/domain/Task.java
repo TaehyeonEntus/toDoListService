@@ -48,19 +48,23 @@ public class Task extends BaseEntity{
     }
 
     //==수정 메서드==//
-    public void changeTitle(String title){
+    public Task changeTitle(String title){
         this.title = title;
+        return this;
     }
 
-    public void changeCaption(String caption){
+    public Task changeCaption(String caption){
         this.caption = caption;
+        return this;
     }
-    public void changeDueDate(LocalDateTime dueDate){
+    public Task changeDueDate(LocalDateTime dueDate){
         this.dueDate = dueDate;
+        return this;
     }
 
-    public void changeStatus(TaskStatus status){
+    public Task changeStatus(TaskStatus status){
         this.status = status;
+        return this;
     }
 
     public Task(TaskDTO taskDTO){

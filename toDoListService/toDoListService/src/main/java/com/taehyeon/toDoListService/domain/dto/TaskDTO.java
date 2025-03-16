@@ -17,6 +17,8 @@ public class TaskDTO {
     private Member member;
     private LocalDateTime dueDate;
     private TaskStatus status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public TaskDTO(Task task) {
         this.id = task.getId();
@@ -25,5 +27,7 @@ public class TaskDTO {
         this.member = task.getMember();
         this.dueDate = task.getDueDate();
         this.status = task.getStatus();
+        this.createdAt = task.getCreatedAt();
+        this.updatedAt = task.getUpdatedAt();
     }
 }

@@ -3,38 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>네비게이션 바</title>
+    <title>할 일 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<!-- 헤더 템플릿 호출 -->
 <header th:replace="~{fragments/header}"></header>
 
 <div class="container my-4">
-    <div class="row d-flex justify-content-center"> <!-- 카드들을 가운데 정렬 -->
-        <!-- tasks 리스트를 순회하여 각 task를 카드 형태로 출력 -->
+    <div class="row d-flex justify-content-center">
         <div class="col-md-6 col-lg-4 mb-4" th:each="task : ${homeDisplayRequest.tasks}">
-            <!-- Task 카드 -->
             <div class="card" th:classappend="${task.status.name() == 'COMPLETE'} ? 'bg-light text-muted' : ''">
                 <div class="card-body">
-                    <!-- Task 제목 + "✔ 완료됨" 뱃지 추가 -->
                     <h5 class="card-title">
                         <span th:text="${task.title}">Task Title</span>
                         <span th:if="${task.status.name() == 'COMPLETE'}" class="badge bg-secondary ms-2">✔ 완료됨</span>
                     </h5>
-
-                    <!-- Task 설명 -->
                     <p class="card-text" th:text="${task.caption}">Task Caption</p>
-
                     <div class="d-flex justify-content-between">
                         <p class="card-text mb-0"
-                           th:text="'Created: ' + ${#temporals.format(task.created_at, 'yyyy-MM-dd HH:mm')}"></p>
+                           th:text="'Created: ' + ${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
                         <p class="card-text mb-0"
                            th:text="'Due: ' + ${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></p>
                     </div>
-
                     <div class="d-flex justify-content-end mt-3">
-                        <!-- 진행 중인 Task일 때만 "완료" & "수정" 버튼 표시 -->
                         <th:block th:if="${task.status.name() == 'TODO'}">
                             <form th:action="@{/home/{taskId}/complete(taskId=${task.id})}" method="post">
                                 <button type="submit" class="btn btn-success btn-sm me-2">완료</button>
@@ -43,8 +34,6 @@
                                 <button type="submit" class="btn btn-primary btn-sm me-2">수정</button>
                             </form>
                         </th:block>
-
-                        <!-- 삭제 버튼 (항상 표시) -->
                         <form th:action="@{/home/{taskId}/delete(taskId=${task.id})}" method="post">
                             <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                         </form>
@@ -53,13 +42,54 @@
             </div>
         </div>
     </div>
+
+    <!-- 페이지네이션 -->
+    <div class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                <!-- 이전 페이지 -->
+                <li class="page-item" th:classappend="${homeDisplayRequest.isFirst} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/home(page=0, searchParam=${condition.searchParam}, searchType=${condition.searchType})}">
+                        처음
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${homeDisplayRequest.isFirst} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/home(page=${homeDisplayRequest.currentPage - 1}, searchParam=${condition.searchParam}, searchType=${condition.searchType})}">
+                        이전
+                    </a>
+                </li>
+
+                <!-- 페이지 번호 -->
+                <li class="page-item"
+                    th:each="pageNum : ${#numbers.sequence(0, homeDisplayRequest.totalPages - 1)}"
+                    th:classappend="${pageNum == homeDisplayRequest.currentPage} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/home(page=${pageNum}, searchParam=${condition.searchParam}, searchType=${condition.searchType})}"
+                       th:text="${pageNum + 1}">
+                    </a>
+                </li>
+
+                <!-- 다음 페이지 -->
+                <li class="page-item" th:classappend="${homeDisplayRequest.isLast} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/home(page=${homeDisplayRequest.currentPage + 1}, searchParam=${condition.searchParam}, searchType=${condition.searchType})}">
+                        다음
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${homeDisplayRequest.isLast} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/home(page=${homeDisplayRequest.totalPages - 1}, searchParam=${condition.searchParam}, status=${condition.status}, searchType=${condition.searchType})}">
+                        마지막
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
 </div>
 
-
-<!-- 푸터 템플릿 호출 -->
 <footer th:replace="~{fragments/footer}"></footer>
-
-<!-- Bootstrap Bundle (Popper 포함) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

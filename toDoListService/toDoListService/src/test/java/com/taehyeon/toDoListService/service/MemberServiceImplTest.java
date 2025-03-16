@@ -37,10 +37,11 @@ class MemberServiceImplTest {
         Member member = Member.createMember("abc", "김태현","1234");
         memberServiceImpl.add(member);
 
-        Member findMember = memberServiceImpl.find(member.getId());
+        Member memberById = memberServiceImpl.find(member.getId());
+        Member memberByUsername = memberServiceImpl.findByUsername("김태현");
 
-        assertEquals(member.getUsername(), findMember.getUsername());
-        assertEquals(member.getPassword(), findMember.getPassword());
+        assertEquals(member.getId(), memberById.getId());
+        assertEquals(member.getId(), memberByUsername.getId());
     }
 
 

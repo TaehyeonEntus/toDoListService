@@ -19,11 +19,12 @@ public class InitService {
     @Transactional
     public void init() {
         Member member = Member.createMember("김태현", "메로나", "12341234");
-        Task task = Task.createTask("제목", "내용", LocalDateTime.now().plusWeeks(1));
-
-        task.assignTo(member);
-
         memberService.add(member);
-        taskService.add(task);
+
+        for(int i = 1; i<100; i++){
+            Task task = Task.createTask("제목" + i, "내용" + i, LocalDateTime.now().plusWeeks(i));
+            task.assignTo(member);
+            taskService.add(task);
+        }
     }
 }

@@ -1,13 +1,14 @@
 package com.taehyeon.toDoListService.service;
 
 import com.taehyeon.toDoListService.domain.Task;
+import com.taehyeon.toDoListService.domain.TaskSearchCondition;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
-public interface TaskService {
-    Long update(Task task);
+public interface TaskService{
+    Long update(Long taskId, Task newTask);
     Long add(Task task);
     Task find(Long id);
-    List<Task> findAll();
+    Page<Task> findPage(Pageable pageable, TaskSearchCondition condition);
     void delete(Long id);
 }
