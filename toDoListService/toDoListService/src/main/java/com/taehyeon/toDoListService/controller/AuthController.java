@@ -1,5 +1,6 @@
 package com.taehyeon.toDoListService.controller;
 
+import com.taehyeon.toDoListService.annotation.BeforeLogin;
 import com.taehyeon.toDoListService.domain.dto.MemberLoginRequest;
 import com.taehyeon.toDoListService.domain.dto.MemberRegisterRequest;
 import com.taehyeon.toDoListService.exception.authException.DuplicateUsernameException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
+@BeforeLogin
 public class AuthController {
     private final AuthServiceImpl authService;
 

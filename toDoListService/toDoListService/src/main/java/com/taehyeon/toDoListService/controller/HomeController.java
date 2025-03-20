@@ -1,5 +1,6 @@
 package com.taehyeon.toDoListService.controller;
 
+import com.taehyeon.toDoListService.annotation.AfterLogin;
 import com.taehyeon.toDoListService.domain.*;
 import com.taehyeon.toDoListService.domain.dto.HomeDisplayRequest;
 import com.taehyeon.toDoListService.domain.dto.TaskAddRequest;
@@ -20,19 +21,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/home")
 @RequiredArgsConstructor
+@AfterLogin
 public class HomeController {
     private final MemberServiceImpl memberService;
     private final TaskServiceImpl taskService;
 
-    @GetMapping
+    @GetMapping("/home")
     public String home(@ModelAttribute TaskSearchCondition condition,
                        @PageableDefault(size = 10, sort = "dueDate",direction = Sort.Direction.ASC) Pageable pageable,
                        Model model,
                        HttpSession session) {
         try{
             memberService.find((Long) session.getAttribute("memberId"));
+
             Page<Task> page = taskService.findPage(pageable, condition);
 
             model.addAttribute("condition", condition);
@@ -46,14 +48,14 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/home/add")
     public String addTask(Model model) {
         model.addAttribute("taskAddRequest", new TaskAddRequest());
 
         return "taskAdd";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/home/add")
     public String addTask(@Valid TaskAddRequest taskAddRequest, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "taskAdd";
@@ -66,7 +68,7 @@ public class HomeController {
         return "redirect:/home";
     }
 
-    @GetMapping("/{taskId}/edit")
+    @GetMapping("/home/{taskId}/edit")
     public String editTask(Model model, @PathVariable Long taskId) {
         Task task = taskService.find(taskId);
 
@@ -74,7 +76,7 @@ public class HomeController {
         return "taskEdit";
     }
 
-    @PostMapping("/{taskId}/edit")
+    @PostMapping("/home/{taskId}/edit")
     public String editTask(@Valid TaskEditRequest taskEditRequest, BindingResult bindingResult, @PathVariable Long taskId) {
         if (bindingResult.hasErrors()) {
             return "taskEdit";
@@ -83,16 +85,22 @@ public class HomeController {
         return "redirect:/home";
     }
 
-    @PostMapping("/{taskId}/complete")
+    @PostMapping("/home/{taskId}/complete")
     public String completeTask(@PathVariable Long taskId) {
         taskService.updateStatus(taskId, TaskStatus.COMPLETE);
         return "redirect:/home";
     }
 
-    @PostMapping("/{taskId}/delete")
+    @PostMapping("/home/{taskId}/delete")
     public String deleteTask(@PathVariable Long taskId) {
         taskService.delete(taskId);
 
         return "redirect:/home";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 }
